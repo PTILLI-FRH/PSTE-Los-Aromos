@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Comunitario - Barrio Los Aromos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .hero-bg {
+            background: linear-gradient(rgba(0, 55, 109, 0.8), rgba(15, 23, 42, 0.9)), 
+                        url('https://images.unsplash.com/photo-1516937941344-00b4e0337589?auto=format&fit=crop&q=80'); /* Imagen de contexto industrial/urbano */
+            background-size: cover;
+            background-position: center;
+        }
+        .glitch {
+            animation: glitch 2s infinite;
+        }
+        @keyframes glitch {
+            0% { opacity: 1; }
+            50% { opacity: 0.8; transform: translateX(1px); }
+            100% { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 font-sans">
+
+    <nav class="bg-[#00376d] text-white py-3 px-6 flex justify-between items-center shadow-lg">
+        <div class="flex items-center gap-3">
+            <i class="fas fa-house-chimney-window text-2xl"></i>
+            <span class="font-bold tracking-tighter uppercase">Sociedad de Fomento Los Aromos</span>
+        </div>
+        <div class="text-[10px] bg-red-600 px-2 py-1 rounded animate-pulse">
+            SISTEMA EN MANTENIMIENTO
+        </div>
+    </nav>
+
+    <header class="hero-bg text-white py-20 px-6 text-center shadow-inner">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-4xl md:text-6xl font-black mb-4 tracking-tight">Bienvenidos al Territorio</h1>
+            <p class="text-xl text-blue-200 mb-8 font-light">Barrio Los Aromos: Proyecto de Intervención Sociotécnica PSTE-2026</p>
+            
+            <div class="bg-black/50 backdrop-blur-md p-6 rounded-2xl border border-white/10 max-w-2xl mx-auto">
+                <p class="text-sm leading-relaxed mb-6">
+                    <span class="text-yellow-400 font-bold"><i class="fas fa-triangle-exclamation"></i> ESTADO DE EMERGENCIA:</span><br>
+                    La base de datos de infraestructura comunitaria ha sufrido una desincronización crítica. Requerimos la intervención de los equipos de ingeniería de la UTN para recuperar los 7 nodos del informe extensionista.
+                </p>
+                <a href="./panel_comando.html" target="_blank" class="inline-flex items-center px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-full transition-all transform hover:scale-105 shadow-lg group">
+    INICIAR OPERACIÓN TERRITORIO 
+    <i class="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+</a>
+            </div>
+        </div>
+    </header>
+<section class="max-w-6xl mx-auto py-12 px-6">
+    <div class="bg-slate-900 p-2 rounded-3xl shadow-[0_0_50px_rgba(30,58,138,0.3)] border-4 border-slate-800">
+        
+        <div class="flex justify-between items-center px-6 py-3 bg-slate-800 rounded-t-2xl">
+            <div class="flex items-center gap-3">
+                <span class="flex h-3 w-3 rounded-full bg-red-500 animate-pulse"></span>
+                <h2 class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Sistema de Reconocimiento Georeferenciado</h2>
+            </div>
+            <div class="flex gap-1">
+                <div class="w-2 h-2 rounded-full bg-slate-600"></div>
+                <div class="w-2 h-2 rounded-full bg-slate-600"></div>
+                <div class="w-2 h-2 rounded-full bg-slate-600"></div>
+            </div>
+        </div>
+
+        <div style="width: 100%;" class="overflow-hidden">
+            <div style="position: relative; padding-bottom: 56.25%; padding-top: 0; height: 0;">
+                <iframe title="Los Aromos" frameborder="0" width="1200" height="675" 
+                    style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" 
+                    src="https://view.genially.com/69d570f8cd11f04f5f7814d0" 
+                    type="text/html" allowscriptaccess="always" allowfullscreen="true" 
+                    scrolling="yes" allownetworking="all">
+                </iframe> 
+            </div> 
+        </div>
+
+        <div class="bg-slate-800/50 p-3 rounded-b-2xl text-center">
+            <p class="text-[11px] text-blue-400 font-mono uppercase tracking-widest">
+                Identifique los puntos críticos en el Barrio Los Aromos para recolectar información, resolver los desafíos y obtener las credenciales de acceso.
+            </p>
+        </div>
+    </div>
+<section class="max-w-6xl mx-auto pt-12 px-0"> <div class="mb-6 border-l-4 border-blue-600 pl-4"> <div class="border-b border-slate-200 pb-2">
+            <h2 class="text-xl font-bold text-slate-800 tracking-tighter leading-tight">
+                Áreas de intervención prioritaria
+            </h2>
+            <p class="text-sm text-slate-500 italic mt-1">
+               Recursos para identificar tensiones y conflictos en el territorio
+            </p>
+        </div>
+    </div>
+</section>
+
+<main class="max-w-6xl mx-auto pt-2 pb-8 px-6 grid grid-cols-1 md:grid-cols-3 gap-8">
+        
+        <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-emerald-500">
+            <i class="fas fa-hospital-user text-emerald-500 text-3xl mb-4"></i>
+            <h3 class="font-bold text-slate-800 mb-2">Centro de Salud N°4</h3>
+            <p class="text-xs text-slate-500">Reporte: Problemas intermitentes de suministro eléctrico afectan la cadena de frío de las vacunas.</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-blue-500">
+            <i class="fas fa-school text-blue-500 text-3xl mb-4"></i>
+            <h3 class="font-bold text-slate-800 mb-2">Escuela Primaria</h3>
+            <p class="text-xs text-slate-500">Aviso: El nodo de conectividad escolar está fuera de servicio. Los registros de alumnos están fragmentados.</p>
+        </div>
+
+<div class="bg-white p-6 rounded-2xl shadow-sm border-b-4 border-orange-500">
+    <i class="fas fa-faucet text-orange-500 text-3xl mb-4"></i>
+    <h3 class="font-bold text-slate-800 mb-2">Red de Agua</h3>
+    <p class="text-xs text-slate-500">Estado: Obra de extensión paralizada. Se requiere validación técnica de los planos territoriales.</p>
+</div>
+
+    </main>
+<section class="max-w-6xl mx-auto pt-4 px-6">
+    <div class="mb-8 border-l-4 border-blue-600 pl-4"> 
+        <div class="border-b border-slate-200 pb-3">
+            <h2 class="text-xl font-bold text-slate-800 tracking-tighter leading-tight">
+                Repositorio documental
+            </h2>
+            <p class="text-sm text-slate-500 italic mt-1">
+                Evidencias para la reflexión técnica y social
+            </p>
+        </div>
+    </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            
+            <div class="group relative overflow-hidden rounded-xl bg-white shadow-md">
+                <div class="aspect-video bg-slate-200">
+                    <img src="Foto15.PNG" alt="Barrio" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                </div>
+                <div class="p-4">
+                    <span class="text-[10px] font-bold text-blue-600 uppercase">Infraestructura</span>
+                    <p class="text-xs text-slate-600 mt-1">Cruce de calles sin pavimentar y acumulación de residuos sobre zanjas de desagüe.</p>
+                </div>
+            </div>
+
+            <div class="group relative overflow-hidden rounded-xl bg-white shadow-md">
+                <div class="aspect-video bg-slate-200">
+                    <img src="Foto12.PNG" alt="Cables" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                </div>
+                <div class="p-4">
+                    <span class="text-[10px] font-bold text-orange-600 uppercase">Suministro</span>
+                    <p class="text-xs text-slate-600 mt-1">Maraña de conexiones precarias en el poste de tensión principal del Sector Norte.</p>
+                </div>
+            </div>
+
+            <div class="group relative overflow-hidden rounded-xl bg-white shadow-md">
+                <div class="aspect-video bg-slate-200">
+                    <img src="Foto14.PNG" alt="Vecinos" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                </div>
+                <div class="p-4">
+                    <span class="text-[10px] font-bold text-emerald-600 uppercase">Organización</span>
+                    <p class="text-xs text-slate-600 mt-1">Punto de encuentro vecinal: centro de gestión de reclamos por servicios públicos.</p>
+                </div>
+            </div>
+
+        </div>
+<section class="max-w-6xl mx-auto pt-12 px-0">
+    <div class="mb-4 border-l-4 border-blue-600 pl-4"> 
+        <div class="border-b border-slate-200 pb-3">
+            <h2 class="text-xl font-bold text-slate-800 tracking-tighter leading-tight">
+                Registro Visual 
+            </h2>
+            <p class="text-sm text-slate-500 italic mt-1">
+                Imágenes para el análisis territorial
+            </p>
+        </div>
+    </div>
+
+<section class="max-w-6xl mx-auto py-4 px-6">
+    <div class="relative overflow-hidden rounded-3xl bg-slate-950 shadow-2xl" style="height: 600px;">
+        
+        <div id="sliderContenedor" class="flex h-full transition-transform duration-500 ease-out" style="width: 1100%;">
+            
+            <div style="width: calc(100% / 11);" class="h-full flex-shrink-0 flex items-center justify-center bg-slate-950">
+                <img src="foto1.png" class="block max-w-full max-h-full w-auto h-auto object-contain mx-auto">
+            </div>
+            <div style="width: calc(100% / 11);" class="h-full flex-shrink-0 flex items-center justify-center bg-slate-950">
+                <img src="foto2.png" class="block max-w-full max-h-full w-auto h-auto object-contain mx-auto">
+            </div>
+            <div style="width: calc(100% / 11);" class="h-full flex-shrink-0 flex items-center justify-center bg-slate-950">
+                <img src="foto3.png" class="block max-w-full max-h-full w-auto h-auto object-contain mx-auto">
+            </div>
+            <div style="width: calc(100% / 11);" class="h-full flex-shrink-0 flex items-center justify-center bg-slate-950">
+                <img src="foto5.png" class="block max-w-full max-h-full w-auto h-auto object-contain mx-auto">
+            </div>
+            <div style="width: calc(100% / 11);" class="h-full flex-shrink-0 flex items-center justify-center bg-slate-950">
+                <img src="foto6.png" class="block max-w-full max-h-full w-auto h-auto object-contain mx-auto">
+            </div>
+            <div style="width: calc(100% / 11);" class="h-full flex-shrink-0 flex items-center justify-center bg-slate-950">
+                <img src="foto7.png" class="block max-w-full max-h-full w-auto h-auto object-contain mx-auto">
+            </div>
+            <div style="width: calc(100% / 11);" class="h-full flex-shrink-0 flex items-center justify-center bg-slate-950">
+                <img src="foto8.png" class="block max-w-full max-h-full w-auto h-auto object-contain mx-auto">
+            </div>
+            <div style="width: calc(100% / 11);" class="h-full flex-shrink-0 flex items-center justify-center bg-slate-950">
+                <img src="foto9.png" class="block max-w-full max-h-full w-auto h-auto object-contain mx-auto">
+            </div>
+            <div style="width: calc(100% / 11);" class="h-full flex-shrink-0 flex items-center justify-center bg-slate-950">
+                <img src="foto10.png" class="block max-w-full max-h-full w-auto h-auto object-contain mx-auto">
+            </div>
+            <div style="width: calc(100% / 11);" class="h-full flex-shrink-0 flex items-center justify-center bg-slate-950">
+                <img src="foto11.png" class="block max-w-full max-h-full w-auto h-auto object-contain mx-auto">
+            </div>
+            <div style="width: calc(100% / 11);" class="h-full flex-shrink-0 flex items-center justify-center bg-slate-950">
+                <img src="foto13.png" class="block max-w-full max-h-full w-auto h-auto object-contain mx-auto">
+            </div>
+
+        </div>
+
+        <button onclick="moverAtras()" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-blue-600 text-white w-12 h-12 rounded-full backdrop-blur-md z-30 flex items-center justify-center border border-white/20">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button onclick="moverAdelante()" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 hover:bg-blue-600 text-white w-12 h-12 rounded-full backdrop-blur-md z-30 flex items-center justify-center border border-white/20">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/80 text-white px-4 py-1 rounded-full text-[10px] font-mono z-30">
+            FOTO <span id="numActual">1</span> / 11
+        </div>
+    </div>
+</section>
+
+<footer class="text-center py-12 text-slate-500 text-[10px] uppercase tracking-widest">
+    UTN Regional Haedo | Cátedra Ingeniería y Sociedad | Proyecto Los Aromos
+</footer>
+
+<script>
+    // ÚNICA DEFINICIÓN DE VARIABLES Y FUNCIONES
+    let posicionActual = 0;
+    const totalFotos = 11;
+
+    function actualizarVista() {
+        const contenedor = document.getElementById('sliderContenedor');
+        const visorNumero = document.getElementById('numActual');
+        
+        if (contenedor) {
+            // El salto exacto es 100 / 11 = 9.0909% por foto
+            let desplazamiento = posicionActual * (100 / totalFotos);
+            contenedor.style.transform = `translateX(-${desplazamiento}%)`;
+        }
+        if (visorNumero) {
+            visorNumero.innerText = posicionActual + 1;
+        }
+    }
+
+    function moverAdelante() {
+        posicionActual = (posicionActual + 1) % totalFotos;
+        actualizarVista();
+    }
+
+    function moverAtras() {
+        posicionActual = (posicionActual - 1 + totalFotos) % totalFotos;
+        actualizarVista();
+    }
+</script>
+
+</body>
+</html>

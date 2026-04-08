@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operación Territorio FRH - Escape Room</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+        body { font-family: 'JetBrains Mono', monospace; background-color: #020617; color: #38bdf8; overflow-x: hidden; }
+        
+        .scanner-line {
+            height: 2px;
+            background: rgba(56, 189, 248, 0.5);
+            box-shadow: 0 0 15px var(--glow);
+            position: absolute;
+            width: 100%;
+            z-index: 50;
+            pointer-events: none;
+            animation: scan 4s linear infinite;
+        }
+        @keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }
+
+        .audio-wave { display: flex; align-items: center; gap: 3px; height: 40px; }
+        .bar { width: 4px; background: #38bdf8; border-radius: 2px; height: 10px; }
+        .animating .bar { animation: wave 1s ease-in-out infinite; }
+        @keyframes wave { 0%, 100% { height: 10px; } 50% { height: 40px; } }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .station-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid #1e293b;
+        }
+
+        .station-unlocked {
+            border-color: #10b981 !important;
+            background: rgba(16, 185, 129, 0.1) !important;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+        }
+
+        /* Animaciones de transición */
+        .fade-out { animation: fadeOut 0.5s forwards; }
+        .fade-in { animation: fadeIn 0.8s forwards; }
+        @keyframes fadeOut { from { opacity: 1; transform: scale(1); } to { opacity: 0; transform: scale(0.9); display: none; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes wave { 0%, 100% { height: 10px; } 50% { height: 40px; } }
+        .terminal-card { background: rgba(15, 23, 42, 0.8); border: 1px solid #1e293b; box-shadow: 0 0 20px rgba(56, 189, 248, 0.1); }
+        .status-dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; }
+        .pulse { animation: pulse-animation 2s infinite; }
+        @keyframes pulse-animation { 0% { box-shadow: 0 0 0 0px rgba(56, 189, 248, 0.4); } 100% { box-shadow: 0 0 0 10px rgba(56, 189, 248, 0); } }
+        .code-input { background: #0f172a; border: 1px solid #334155; color: #f1f5f9; text-transform: uppercase; outline: none; }
+        .code-input:focus { border-color: #38bdf8; box-shadow: 0 0 10px rgba(56, 189, 248, 0.2); }
+        .unlocked-border { border-color: #10b981 !important; box-shadow: 0 0 15px rgba(16, 185, 129, 0.2); }
+        .hidden-section { display: none; }
+        .fade-in { animation: fadeIn 0.8s ease-in forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 flex items-center justify-center">
+
+    <!-- Línea de escaneo global -->
+    <div class="scanner-line"></div>
+
+    <!-- MÓDULO 1: AUDIO -->
+    <div id="audio-module" class="max-w-md w-full bg-slate-900 border border-blue-900/50 rounded-3xl p-8 relative overflow-hidden shadow-2xl">
+            <div class="text-center relative z-10">
+            <i class="fas fa-user-secret text-blue-500 text-6xl mb-4 drop-shadow-[0_0_10px_rgba(56,189,248,0.5)]"></i>
+            <h1 class="text-xl font-bold tracking-tighter text-blue-400">OPERACIÓN TERRITORIO</h1>
+                <p class="text-[10px] text-slate-500 uppercase">Fuerza Regional Haedo - Encriptado</p>
+              </div>
+	<!-- Espacio extra aquí -->
+    <div class="w-full mt-4">
+            <div id="status-box" class="bg-slate-950 border border-slate-800 rounded-xl p-4 mb-8">
+                <p id="status-text" class="text-xs text-emerald-400 tracking-widest animate-pulse">ESPERANDO AUTORIZACIÓN...</p>
+                <div id="visualizer" class="flex justify-center items-center gap-1 h-12 mt-2 hidden audio-wave">
+                    <div class="bar" style="animation-delay: 0.1s"></div>
+                    <div class="bar" style="animation-delay: 0.3s"></div>
+                    <div class="bar" style="animation-delay: 0.2s"></div>
+                    <div class="bar" style="animation-delay: 0.4s"></div>
+                    <div class="bar" style="animation-delay: 0.1s"></div>
+                </div>
+            </div>
+            <button id="playBtn" class="bg-blue-600 text-white font-bold py-4 px-8 rounded-xl w-full hover:bg-blue-500 transition-all">
+                <i class="fas fa-play mr-2"></i> REPRODUCIR MENSAJE
+            <!-- BOTÓN DE ACCESO -->
+<button id="goToBoardBtn" class="hidden bg-emerald-600 text-white font-bold py-4 px-8 rounded-xl w-full hover:bg-emerald-500 fade-in">
+    ACCEDER A LA MISIÓN <i class="fas fa-arrow-right ml-2"></i>
+</button>
+
+<!-- CONTENEDOR CON MARGEN SUPERIOR REFORZADO -->
+<div class="w-full mt-10"> <!-- Subí de mt-4 a mt-10 para que se note el espacio -->
+    <p id="destruct-text" class="text-[9px] text-slate-400 uppercase text-center w-full tracking-widest opacity-60">
+        — Advertencia: Este mensaje es confidencial —
+    </p>
+</div>
+</p>
+        </div>
+    </div>
+
+    <!-- MÓDULO 2: TABLERO -->
+    <div id="main-board" class="max-w-4xl mx-auto hidden-section w-full">
+        <header class="terminal-card rounded-t-2xl p-6 border-b-2 border-blue-500/30 text-center">
+            <h1 class="text-xl md:text-2xl font-bold tracking-tighter flex justify-center items-center gap-3 text-white">
+                <span class="status-dot bg-blue-500 pulse"></span> SISTEMA_DE_CONTROL_PSTE.v1
+            </h1>
+            <p class="text-[10px] text-blue-400 opacity-70 mt-1 uppercase">Misión: Operación Territorio FRH - UTN</p>
+        </header>
+
+        <section class="terminal-card p-6 border-x border-slate-800 bg-slate-900/50">
+            
+            <!-- PROTOCOLO DE ACTIVACIÓN -->
+<div class="relative bg-blue-950/20 border-l-4 border-blue-500 p-6 rounded-r-xl mb-8 overflow-hidden shadow-[0_0_20px_rgba(59,130,246,0.15)] group">
+    
+    <!-- EFECTO ESCÁNER (Línea que baja) -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden opacity-20">
+        <div class="scanner-band h-1/2 w-full bg-gradient-to-b from-transparent via-blue-500 to-transparent absolute -top-full animate-[scan_4s_band_infinite]"></div>
+    </div>
+
+    <!-- FONTO CON PATRÓN DE MICRO-PUNTOS -->
+    <div class="absolute inset-0 opacity-10 pointer-events-none" style="background-image: radial-gradient(#38bdf8 0.5px, transparent 0.5px); background-size: 10px 10px;"></div>
+
+    <div class="relative z-10">
+        <div class="flex items-center gap-3 mb-4">
+            <div class="h-2 w-2 bg-red-500 rounded-full animate-ping"></div>
+            <h2 class="text-blue-400 font-bold text-sm tracking-[0.2em] uppercase">
+                PROTOCOLO DE ACTIVACIÓN — OPERACIÓN TERRITORIO FRH
+            </h2>
+        </div>
+        
+        <div class="space-y-4">
+            <div class="flex justify-between items-center border-b border-blue-900/50 pb-2">
+                <p class="text-[10px] text-slate-500 font-mono uppercase tracking-widest">Acceso: Nivel de Seguridad 5</p>
+                <p class="text-[10px] text-blue-500 font-mono animate-pulse uppercase">Encriptación AES-256</p>
+            </div>
+
+            <div class="flex flex-wrap gap-2 text-[9px] font-bold">
+                <span class="text-emerald-500 bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-900/50 uppercase">[ Iniciar Sistema ]</span>
+                <span class="text-emerald-500 bg-emerald-950/40 px-2 py-0.5 rounded border border-emerald-900/50 uppercase">[ Sincronizar Nodos ]</span>
+                <span class="text-blue-400 bg-blue-950/40 px-2 py-0.5 rounded border border-blue-900/50 uppercase">[ Recuperar Logs ]</span>
+            </div>
+
+            <div class="pt-3 text-blue-100">
+                <p class="text-[11px] leading-relaxed antialiased">
+                    <span class="text-blue-400 font-bold drop-shadow-[0_0_5px_rgba(56,189,248,0.5)]">ATENCIÓN, EQUIPO:</span><br>
+                    Los registros del proyecto <span class="text-blue-400 font-bold border-b border-blue-400/30">PSTE</span> han sido fragmentados en 7 nodos de seguridad, cada uno correspondiente a una etapa del proceso extensionista.
+                </p>
+                <div class="mt-4 flex items-start gap-2 bg-blue-900/20 p-3 rounded-lg border border-blue-800/30">
+                    <i class="fas fa-info-circle text-blue-400 mt-1 text-xs"></i>
+                    <p class="text-xs text-slate-400 italic">
+                        El sistema requiere una <span class="text-emerald-400 font-bold uppercase tracking-tight">validación secuencial</span> para reconstruir el informe perdido en el territorio.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+            <h2 class="text-[10px] font-bold uppercase text-slate-500 mb-6 tracking-[0.3em] text-center">Panel de Estaciones de Trabajo</h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Estaciones -->
+                <div id="card-1" class="terminal-card p-4 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-start mb-2"><span class="text-[9px] text-slate-500 uppercase">ST_01</span><i id="icon-1" class="fas fa-lock text-slate-600"></i></div>
+                    <h3 class="text-[11px] font-bold text-white mb-2 uppercase">El territorio habla</h3>
+                    <input type="text" id="input-1" onkeyup="checkCode(1, 'PREGUNTA')" class="code-input w-full p-2 text-center text-xs rounded" placeholder="CÓDIGO">
+                </div>
+                <div id="card-2" class="terminal-card p-4 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-start mb-2"><span class="text-[9px] text-slate-500 uppercase">ST_02</span><i id="icon-2" class="fas fa-lock text-slate-600"></i></div>
+                    <h3 class="text-[11px] font-bold text-white mb-2 uppercase">Red de actores</h3>
+                    <input type="text" id="input-2" onkeyup="checkCode(2, 'RED')" class="code-input w-full p-2 text-center text-xs rounded" placeholder="CÓDIGO">
+                </div>
+                <div id="card-3" class="terminal-card p-4 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-start mb-2"><span class="text-[9px] text-slate-500 uppercase">ST_03</span><i id="icon-3" class="fas fa-lock text-slate-600"></i></div>
+                    <h3 class="text-[11px] font-bold text-white mb-2 uppercase">Evidencia crítica</h3>
+                    <input type="text" id="input-3" onkeyup="checkCode(3, 'EVIDENCIA')" class="code-input w-full p-2 text-center text-xs rounded" placeholder="CÓDIGO">
+                </div>
+                <div id="card-4" class="terminal-card p-4 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-start mb-2"><span class="text-[9px] text-slate-500 uppercase">ST_04</span><i id="icon-4" class="fas fa-lock text-slate-600"></i></div>
+                    <h3 class="text-[11px] font-bold text-white mb-2 uppercase">Articulación Teórica</h3>
+                    <input type="text" id="input-4" onkeyup="checkCode(4, 'TEORIA')" class="code-input w-full p-2 text-center text-xs rounded" placeholder="CÓDIGO">
+                </div>
+                <div id="card-5" class="terminal-card p-4 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-start mb-2"><span class="text-[9px] text-slate-500 uppercase">ST_05</span><i id="icon-5" class="fas fa-lock text-slate-600"></i></div>
+                    <h3 class="text-[11px] font-bold text-white mb-2 uppercase">Prototipo Social</h3>
+                    <input type="text" id="input-5" onkeyup="checkCode(5, 'PROPUESTA')" class="code-input w-full p-2 text-center text-xs rounded" placeholder="CÓDIGO">
+                </div>
+                <div id="card-6" class="terminal-card p-4 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-start mb-2"><span class="text-[9px] text-slate-500 uppercase">ST_06</span><i id="icon-6" class="fas fa-lock text-slate-600"></i></div>
+                    <h3 class="text-[11px] font-bold text-white mb-2 uppercase">Diálogo Común</h3>
+                    <input type="text" id="input-6" onkeyup="checkCode(6, 'DIALOGO')" class="code-input w-full p-2 text-center text-xs rounded" placeholder="CÓDIGO">
+                </div>
+                <div id="card-7" class="terminal-card p-4 rounded-xl border border-slate-700">
+                    <div class="flex justify-between items-start mb-2"><span class="text-[9px] text-slate-500 uppercase">ST_07</span><i id="icon-7" class="fas fa-lock text-slate-600"></i></div>
+                    <h3 class="text-[11px] font-bold text-white mb-2 uppercase">Rastro Personal</h3>
+                    <input type="text" id="input-7" onkeyup="checkCode(7, 'RASTRO')" class="code-input w-full p-2 text-center text-xs rounded" placeholder="CÓDIGO">
+                </div>
+
+                  <!-- BOTÓN FINAL -->
+                <div class="col-span-1 flex flex-col justify-center items-center p-2">
+                    <button id="btnFinal" onclick="revealSuccess()" class="w-full py-4 bg-slate-800 text-slate-600 font-bold rounded-xl cursor-not-allowed uppercase text-[10px] border border-slate-700" disabled>
+                        BLOQUEADO
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <footer class="terminal-card rounded-b-2xl p-4 border-t-2 border-slate-800 flex justify-between items-center bg-slate-950">
+            <div id="log-text" class="text-[9px] text-slate-500 uppercase">Esperando credenciales...</div>
+            <div class="w-32 h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                <div id="progressBar" class="h-full bg-blue-500 transition-all duration-500" style="width: 0%"></div>
+            </div>
+        </footer>
+    </div>
+
+<div id="successModal" class="fixed inset-0 bg-black/95 flex items-center justify-center hidden z-50 p-4">
+    <div class="terminal-card p-8 max-w-lg w-full rounded-3xl border-2 border-emerald-500 text-center shadow-[0_0_50px_rgba(16,185,129,0.3)]">
+        <i class="fas fa-check-double text-emerald-500 text-5xl mb-6"></i>
+        <h3 class="text-2xl font-bold text-emerald-400 mb-4 uppercase tracking-tighter">Misión Cumplida</h3>
+        
+        <div class="text-slate-300 text-sm mb-6 leading-relaxed text-left space-y-4">
+            <p class="font-bold text-emerald-400">> ACCESO AUTORIZADO...</p>
+            <p>“Acaban de reconstruir el proceso extensionista que recorrerán este año. La ingeniería es técnica, pero también es territorio, diálogo, evidencia y compromiso social.”</p>
+            
+            <div class="bg-emerald-950/30 border border-emerald-500/50 p-4 rounded-xl mt-4 text-center">
+                <p class="text-[11px] uppercase text-emerald-500/70 mb-1 tracking-widest">Token de Validación Final</p>
+                <p id="finalToken" class="text-xl font-mono font-bold text-emerald-400 tracking-widest bg-black/40 py-2 rounded border border-emerald-900/50 uppercase min-h-[1.5em] flex items-center justify-center"></p>
+                <p class="text-[10px] mt-2 text-slate-500 italic">Registra este código como prueba de finalización del PSTE.</p>
+            </div>
+
+            <p class="text-blue-400 text-xs mt-4">Bienvenidos a la experiencia PSTE de Ingeniería y Sociedad - FRH UTN.</p>
+        </div>
+
+        <button onclick="terminateSession()" class="w-full bg-red-600 text-white py-4 rounded-2xl font-bold uppercase tracking-widest text-[10px]">
+            FINALIZAR CONEXIÓN Y SALIR
+        </button>
+    </div>
+</div>
+    </div>
+
+    <script>
+        const playBtn = document.getElementById('playBtn');
+        const goToBoardBtn = document.getElementById('goToBoardBtn');
+        const statusText = document.getElementById('status-text');
+        const visualizer = document.getElementById('visualizer');
+let states = { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false, 7: false };
+        // Función de Audio
+        function speakMission() {
+            const text = "Atención equipo de Ingeniería y Sociedad de la Regional Haedo. La comunidad del Barrio Los Aromos nos ha enviado un pedido urgente. El informe técnico ha sido interceptado y está incompleto. Su objetivo es reconstruir las siete etapas del proceso extensionista para liberar el acceso al territorio. Estudiantes... el éxito del proyecto depende de ustedes. Este mensaje se autodestruirá. Buena suerte.";
+            const msg = new SpeechSynthesisUtterance();
+            msg.text = text;
+            msg.lang = 'es-ES';
+            msg.rate = 0.9;
+	    msg.pitch = 0.8;
+            msg.onstart = () => {
+                statusText.innerText = "TRANSMISIÓN EN CURSO...";
+                visualizer.classList.remove('hidden');
+                visualizer.classList.add('flex','animating');
+ 		playBtn.disabled = true;
+		playBtn.classList.add('opacity-30', 'blur-[3px]', 'cursor-not-allowed'); 
+ 		playBtn.innerHTML = '<i class="fas fa-spinner animate-spin mr-2"></i> PROCESANDO...';
+            };
+
+            msg.onend = () => {
+                statusText.innerText = "SISTEMA BLOQUEADO. ACCESO EXPIRADO.";
+                statusText.classList.replace('text-emerald-400', 'text-red-500');
+                visualizer.classList.add('hidden');
+                playBtn.classList.add('hidden');
+                goToBoardBtn.classList.remove('hidden');
+                document.getElementById('destruct-text').innerText = "MENSAJE DE AUDIO ELIMINADO POR SEGURIDAD";
+
+            };
+            window.speechSynthesis.speak(msg);
+        }
+
+        document.getElementById('playBtn').addEventListener('click', speakMission);
+        document.getElementById('goToBoardBtn').addEventListener('click', () => {
+            document.getElementById('audio-module').classList.add('hidden');
+            document.getElementById('main-board').classList.remove('hidden-section');
+            document.getElementById('main-board').classList.add('fade-in');
+        });
+
+        // Lógica de Validación (Corregida)
+        function checkCode(st, code) {
+            const input = document.getElementById(`input-${st}`);
+            // Limpiamos el texto ingresado (le sacamos espacios y acentos)
+            const val = input.value.trim().toUpperCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            
+            if (val === code) {
+                states[st] = true;
+                const card = document.getElementById(`card-${st}`);
+                card.classList.add('unlocked-border', 'bg-emerald-950/20');
+                document.getElementById(`icon-${st}`).className = "fas fa-lock-open text-emerald-400";
+                input.disabled = true;
+                updateProgress();
+            }
+        }
+
+        function updateProgress() {
+            const solvedCount = Object.values(states).filter(v => v === true).length;
+            const progressPercent = (solvedCount / 7) * 100;
+            
+            document.getElementById('progressBar').style.width = progressPercent + '%';
+            document.getElementById('log-text').innerText = `ESTACIONES SINCRONIZADAS: ${solvedCount}/7`;
+
+            if (solvedCount === 7) {
+                const btn = document.getElementById('btnFinal');
+                btn.disabled = false;
+                btn.classList.remove('bg-slate-800', 'text-slate-600', 'cursor-not-allowed');
+                btn.classList.add('bg-blue-600', 'text-white', 'pulse', 'hover:bg-blue-500');
+                btn.innerHTML = "INICIAR DESBLOQUEO FINAL";
+            }
+        }
+
+        function revealSuccess() {
+            document.getElementById('successModal').classList.remove('hidden');
+        }
+function terminateSession() {
+    // 1. Creamos el elemento negro
+    var blackScreen = document.createElement('div');
+    
+    // 2. Le damos estilo directamente para que no dependa de nada externo
+    blackScreen.style.position = 'fixed';
+    blackScreen.style.top = '0';
+    blackScreen.style.left = '0';
+    blackScreen.style.width = '100%';
+    blackScreen.style.height = '100%';
+    blackScreen.style.backgroundColor = 'black';
+    blackScreen.style.zIndex = '10000'; // Super alto para tapar todo
+    blackScreen.style.display = 'flex';
+    blackScreen.style.justifyContent = 'center';
+    blackScreen.style.alignItems = 'center';
+    blackScreen.style.color = '#1e293b';
+    blackScreen.style.fontFamily = 'monospace';
+    blackScreen.style.textAlign = 'center';
+    
+    // 3. El mensaje que verán los alumnos
+    blackScreen.innerHTML = '<div><p style="letter-spacing: 5px; color: #334155;">SISTEMA APAGADO</p><p style="font-size: 10px; margin-top: 10px;">OPERACIÓN TERRITORIO FINALIZADA</p></div>';
+    
+    // 4. Lo inyectamos en la página
+    document.body.appendChild(blackScreen);
+    
+    // 5. Intentamos cerrar la ventana después de 3 segundos
+    setTimeout(function() {
+        window.close();
+    }, 3000);
+}
+    </script>
+<script>
+        function revealSuccess() {
+            // 1. Generar el código alfanumérico aleatorio
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let token = 'FRH-';
+            for (let i = 0; i < 8; i++) {
+                token += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+
+            // 2. Inyectar el código en el elemento HTML
+            const tokenElement = document.getElementById('finalToken');
+            if (tokenElement) {
+                tokenElement.innerText = token;
+            }
+
+            // 3. Mostrar el modal de éxito
+            const modal = document.getElementById('successModal');
+            if (modal) {
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function terminateSession() {
+            const blackScreen = document.createElement('div');
+            blackScreen.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;background:black;z-index:10000;display:flex;justify-content:center;align-items:center;color:#00ff41;font-family:monospace;text-align:center;";
+            blackScreen.innerHTML = '<div><p style="letter-spacing:5px;">SISTEMA APAGADO</p><p style="font-size:10px;margin-top:10px;">OPERACIÓN TERRITORIO FINALIZADA</p></div>';
+            document.body.appendChild(blackScreen);
+            
+            setTimeout(() => {
+                window.close();
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
+</body>
+</html>
